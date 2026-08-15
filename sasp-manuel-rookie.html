@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SASP — Manuel de procédures / Fiche rookie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0e13;
+    --bg-panel: #12181f;
+    --bg-raised: #1a222c;
+    --bg-card: #182029;
+    --steel: #2a3542;
+    --steel-light: #3d4b5a;
+    --gold: #c6a15b;
+    --gold-bright: #e5c483;
+    --red: #b0503c;
+    --red-bright: #d16a51;
+    --text: #e7eaee;
+    --text-dim: #9aa7b3;
+    --text-faint: #5e6b78;
+    --radius: 3px;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } *{ animation-duration:0.001ms !important; transition-duration:0.001ms !important; } }
+
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 1200px 600px at 50% -10%, rgba(198,161,91,0.05), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+
+  ::selection{ background:var(--gold); color:#0a0e13; }
+
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  .display{ font-family:'Oswald', sans-serif; text-transform:uppercase; }
+
+  a{ color:inherit; }
+
+  /* ---------- HEADER ---------- */
+  header.site{
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(180deg, var(--bg-panel), var(--bg));
+    border-bottom:1px solid var(--steel);
+    padding:28px 24px 0;
+  }
+  .watermark{
+    position:absolute;
+    top:18px; right:-60px;
+    transform:rotate(8deg);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.35em;
+    color:var(--text-faint);
+    opacity:.45;
+    white-space:nowrap;
+    pointer-events:none;
+  }
+  .header-inner{
+    max-width:1180px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    gap:18px;
+  }
+  .badge-mark{ flex:none; width:52px; height:52px; }
+  .badge-mark svg{ width:100%; height:100%; display:block; }
+  .header-titles{ min-width:0; }
+  .header-titles .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.28em;
+    color:var(--gold);
+    margin:0 0 4px;
+  }
+  h1.site-title{
+    margin:0;
+    font-family:'Oswald', sans-serif;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.02em;
+    font-size:clamp(22px, 3.6vw, 34px);
+    color:var(--text);
+  }
+  .header-sub{
+    margin:4px 0 0;
+    font-size:13px;
+    color:var(--text-dim);
+  }
+  .header-meta{
+    margin-left:auto;
+    text-align:right;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--text-faint);
+    line-height:1.6;
+    flex:none;
+    display:none;
+  }
+  @media (min-width:720px){ .header-meta{ display:block; } }
+
+  /* ---------- TABS ---------- */
+  .tabs{
+    max-width:1180px;
+    margin:22px auto 0;
+    display:flex;
+    gap:6px;
+    padding-left:4px;
+  }
+  .tab-btn{
+    position:relative;
+    padding:11px 24px 13px 26px;
+    background:var(--bg-panel);
+    border:1px solid var(--steel);
+    border-bottom:none;
+    clip-path:polygon(14px 0,100% 0,100% 100%,0 100%,0 14px);
+    font-family:'Oswald', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    font-size:13px;
+    font-weight:600;
+    color:var(--text-dim);
+    cursor:pointer;
+    transition:color .15s ease, background .15s ease;
+  }
+  .tab-btn:hover{ color:var(--text); }
+  .tab-btn.active{
+    background:var(--bg-raised);
+    color:var(--gold-bright);
+    z-index:2;
+    border-color:var(--steel-light);
+  }
+
+  main{
+    background:var(--bg-raised);
+    border-top:1px solid var(--steel-light);
+  }
+  .tab-panel{ display:none; }
+  .tab-panel.active{ display:block; }
+
+  /* ---------- PROCÉDURES LAYOUT ---------- */
+  .proc-shell{
+    max-width:1180px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:230px 1fr;
+    gap:36px;
+    padding:32px 24px 80px;
+  }
+  @media (max-width:860px){ .proc-shell{ grid-template-columns:1fr; } }
+
+  .proc-nav{ position:relative; }
+  @media (min-width:861px){
+    .proc-nav{ position:sticky; top:20px; align-self:start; }
+  }
+  .proc-nav-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; }
+  .proc-nav-list a{
+    display:flex;
+    gap:10px;
+    align-items:baseline;
+    text-decoration:none;
+    padding:8px 10px;
+    border-left:2px solid transparent;
+    border-radius:0 var(--radius) var(--radius) 0;
+    color:var(--text-dim);
+    font-size:12.5px;
+    line-height:1.35;
+    transition:border-color .15s ease, background .15s ease, color .15s ease;
+  }
+  .proc-nav-list a .num{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--text-faint); }
+  .proc-nav-list a:hover{ background:rgba(198,161,91,0.06); color:var(--text); }
+  .proc-nav-list a.active{ border-left-color:var(--gold); color:var(--gold-bright); background:rgba(198,161,91,0.08); }
+  .proc-nav-list a.active .num{ color:var(--gold); }
+
+  .search-wrap{
+    position:relative;
+    margin-bottom:8px;
+  }
+  #proc-search{
+    width:100%;
+    background:var(--bg-card);
+    border:1px solid var(--steel);
+    border-radius:var(--radius);
+    color:var(--text);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    padding:11px 14px 11px 34px;
+    outline:none;
+    transition:border-color .15s ease;
+  }
+  #proc-search:focus{ border-color:var(--gold); }
+  #proc-search::placeholder{ color:var(--text-faint); }
+  .search-wrap::before{
+    content:'';
+    position:absolute; left:12px; top:50%; transform:translateY(-50%);
+    width:12px; height:12px;
+    border:1.5px solid var(--text-faint);
+    border-radius:50%;
+  }
+  .search-wrap::after{
+    content:'';
+    position:absolute; left:20px; top:calc(50% + 5px);
+    width:6px; height:1.5px;
+    background:var(--text-faint);
+    transform:rotate(45deg);
+  }
+
+  .proc-main{ min-width:0; }
+  .no-results{ display:none; color:var(--text-faint); font-size:14px; padding:24px 0; font-family:'IBM Plex Mono', monospace; }
+
+  .proc-section{
+    background:var(--bg-card);
+    border:1px solid var(--steel);
+    border-radius:var(--radius);
+    margin-bottom:22px;
+    overflow:hidden;
+    scroll-margin-top:20px;
+  }
+  .proc-section-head{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:16px 20px;
+    border-bottom:1px solid var(--steel);
+    background:linear-gradient(180deg, rgba(198,161,91,0.045), transparent);
+    border-left:3px solid var(--gold);
+  }
+  .proc-section-head .num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--gold);
+    letter-spacing:.05em;
+  }
+  .proc-section-head h2{
+    margin:0;
+    font-family:'Oswald', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    font-size:17px;
+    font-weight:600;
+  }
+  .proc-section-body{ padding:20px 22px 24px; }
+
+  .entry{ margin-bottom:20px; }
+  .entry:last-child{ margin-bottom:0; }
+  .entry-title{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    color:var(--text-dim);
+    margin:0 0 8px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .entry-title::before{ content:'▸'; color:var(--gold); font-size:11px; }
+  .entry p{ margin:0 0 8px; font-size:14.5px; line-height:1.65; color:var(--text); }
+  .entry p:last-child{ margin-bottom:0; }
+  .entry ul, .entry ol{ margin:0 0 8px; padding-left:20px; font-size:14.5px; line-height:1.65; }
+  .entry li{ margin-bottom:5px; }
+  .entry li:last-child{ margin-bottom:0; }
+  .entry .tight{ padding-left:0; list-style:none; }
+  .entry .tight li{ padding-left:16px; position:relative; }
+  .entry .tight li::before{ content:'–'; position:absolute; left:0; color:var(--gold); }
+
+  .callout{
+    border-left:2px solid var(--red-bright);
+    background:rgba(176,80,60,0.08);
+    padding:10px 14px;
+    border-radius:0 var(--radius) var(--radius) 0;
+    font-size:13.5px;
+    color:var(--text-dim);
+    margin-top:6px;
+    margin-bottom:8px;
+  }
+  .callout strong{ color:var(--red-bright); font-weight:600; }
+  .callout.info{ border-left-color:#6f9bd1; background:rgba(111,155,209,0.08); }
+  .callout.info strong{ color:#8fb4e0; }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:8px; margin-top:4px; }
+  .chip{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    padding:6px 12px;
+    background:var(--bg-panel);
+    border:1px solid var(--steel);
+    border-radius:20px;
+    color:var(--text-dim);
+  }
+
+  table.delay-table{ width:100%; border-collapse:collapse; font-size:13.5px; }
+  table.delay-table th{
+    text-align:left;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+    padding:8px 12px;
+    border-bottom:1px solid var(--steel-light);
+  }
+  table.delay-table td{
+    padding:10px 12px;
+    border-bottom:1px solid var(--steel);
+    color:var(--text);
+  }
+  table.delay-table tr:last-child td{ border-bottom:none; }
+  table.delay-table td.delay-val{
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--gold-bright);
+    white-space:nowrap;
+  }
+
+  /* radio codes grid */
+  .radio-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0 32px; }
+  @media (max-width:520px){ .radio-grid{ grid-template-columns:1fr; } }
+  .radio-col-title{
+    font-family:'Oswald', sans-serif; text-transform:uppercase; letter-spacing:.04em;
+    font-size:14px; color:var(--gold-bright); margin:0 0 8px;
+  }
+  .radio-item{
+    display:flex; justify-content:space-between; gap:10px;
+    padding:8px 2px; border-bottom:1px dashed var(--steel); font-size:13.5px;
+  }
+  .radio-item:last-child{ border-bottom:none; }
+  .radio-item .code{ font-family:'IBM Plex Mono', monospace; font-weight:600; color:#6f9bd1; flex:none; }
+  .radio-item .val{ color:var(--text-dim); text-align:right; }
+
+  /* miranda script */
+  .miranda-script{
+    background:var(--bg-panel);
+    border:1px solid var(--steel);
+    border-radius:var(--radius);
+    padding:16px 18px;
+    font-size:14px;
+    line-height:1.8;
+    color:var(--text);
+  }
+  .miranda-script .ph{ color:var(--red-bright); font-weight:600; }
+  .miranda-script p{ margin:0 0 12px; font-size:14px; }
+  .miranda-script p:last-child{ margin-bottom:0; }
+
+  /* ---------- QUESTIONS TAB ---------- */
+  .quiz-shell{ max-width:900px; margin:0 auto; padding:32px 24px 90px; }
+  .quiz-controls{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+    margin-bottom:22px;
+    padding-bottom:20px;
+    border-bottom:1px solid var(--steel);
+  }
+  .filter-chip{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    padding:7px 14px;
+    background:var(--bg-card);
+    border:1px solid var(--steel);
+    border-radius:20px;
+    color:var(--text-dim);
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .filter-chip:hover{ border-color:var(--steel-light); color:var(--text); }
+  .filter-chip.active{ background:rgba(198,161,91,0.14); border-color:var(--gold); color:var(--gold-bright); }
+
+  .random-btn{
+    margin-left:auto;
+    font-family:'Oswald', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    font-size:13px;
+    font-weight:600;
+    padding:10px 18px;
+    background:var(--gold);
+    color:#1a1305;
+    border:none;
+    border-radius:var(--radius);
+    cursor:pointer;
+    transition:background .15s ease, transform .1s ease;
+  }
+  .random-btn:hover{ background:var(--gold-bright); }
+  .random-btn:active{ transform:scale(0.97); }
+
+  .q-count{ font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--text-faint); margin-bottom:16px; }
+
+  .q-card{
+    background:var(--bg-card);
+    border:1px solid var(--steel);
+    border-radius:var(--radius);
+    margin-bottom:14px;
+    overflow:hidden;
+    scroll-margin-top:20px;
+  }
+  .q-card-top{ padding:18px 20px 16px; }
+  .q-cat{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin:0 0 8px;
+  }
+  .q-text{
+    margin:0;
+    font-family:'Oswald', sans-serif;
+    font-weight:500;
+    text-transform:none;
+    font-size:16.5px;
+    line-height:1.45;
+    color:var(--text);
+  }
+  .reveal-btn{
+    margin-top:14px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    background:transparent;
+    border:1px solid var(--steel-light);
+    color:var(--text-dim);
+    padding:8px 14px;
+    border-radius:var(--radius);
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .reveal-btn:hover{ border-color:var(--gold); color:var(--gold-bright); }
+  .q-answer{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .25s ease;
+    background:var(--bg-panel);
+    border-top:1px solid transparent;
+  }
+  .q-answer.open{ border-top-color:var(--steel); }
+  .q-answer-inner{ padding:16px 20px 18px; font-size:14.5px; line-height:1.65; color:var(--text); }
+  .q-answer-inner .a-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:.1em;
+    color:var(--text-faint);
+    margin:0 0 6px;
+  }
+
+  /* ---------- MODAL (question aléatoire) ---------- */
+  .modal-backdrop{
+    position:fixed; inset:0;
+    background:rgba(5,7,10,0.78);
+    backdrop-filter:blur(3px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+    padding:20px;
+  }
+  .modal-backdrop.open{ display:flex; }
+  .modal-card{
+    background:var(--bg-card);
+    border:1px solid var(--steel-light);
+    border-radius:var(--radius);
+    width:100%;
+    max-width:560px;
+    max-height:85vh;
+    overflow-y:auto;
+    box-shadow:0 20px 60px rgba(0,0,0,0.5);
+    animation:modalIn .18s ease;
+  }
+  @keyframes modalIn{ from{ opacity:0; transform:translateY(10px) scale(.98); } to{ opacity:1; transform:none; } }
+  .modal-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:16px 18px 16px 20px;
+    border-bottom:1px solid var(--steel);
+    border-left:3px solid var(--gold);
+  }
+  .modal-cat{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--gold);
+  }
+  .modal-close{
+    background:none; border:none; color:var(--text-dim);
+    font-size:22px; line-height:1; cursor:pointer; padding:2px 6px;
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .modal-close:hover{ color:var(--gold-bright); }
+  .modal-body{ padding:20px; }
+  .modal-q{
+    margin:0 0 18px;
+    font-family:'Oswald', sans-serif;
+    font-weight:500;
+    font-size:18px;
+    line-height:1.45;
+    color:var(--text);
+  }
+  .modal-a-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+    margin:0 0 6px;
+  }
+  .modal-answer-block{
+    background:var(--bg-panel);
+    border-left:2px solid var(--gold);
+    padding:14px 16px;
+    border-radius:0 var(--radius) var(--radius) 0;
+    font-size:14.5px;
+    line-height:1.65;
+    color:var(--text);
+  }
+  .modal-actions{
+    display:flex; gap:10px; flex-wrap:wrap;
+    padding:4px 20px 20px;
+  }
+  .modal-reroll{
+    font-family:'Oswald', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    font-size:12.5px;
+    font-weight:600;
+    padding:9px 16px;
+    background:var(--gold);
+    color:#1a1305;
+    border:none;
+    border-radius:var(--radius);
+    cursor:pointer;
+  }
+  .modal-reroll:hover{ background:var(--gold-bright); }
+  .modal-dismiss{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    padding:9px 16px;
+    background:transparent;
+    border:1px solid var(--steel-light);
+    color:var(--text-dim);
+    border-radius:var(--radius);
+    cursor:pointer;
+  }
+  .modal-dismiss:hover{ border-color:var(--gold); color:var(--gold-bright); }
+
+  footer.site{
+    text-align:center;
+    padding:24px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--text-faint);
+    border-top:1px solid var(--steel);
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="watermark">USAGE INTERNE — SASP · DIFFUSION RESTREINTE · USAGE INTERNE — SASP · DIFFUSION RESTREINTE</div>
+  <div class="header-inner">
+    <div class="badge-mark">
+      <svg viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="46" stroke="#c6a15b" stroke-width="2"/>
+        <circle cx="50" cy="50" r="38" stroke="#c6a15b" stroke-width="1" opacity="0.5"/>
+        <path d="M50 14 L58 40 L86 40 L63 56 L71 82 L50 66 L29 82 L37 56 L14 40 L42 40 Z" stroke="#c6a15b" stroke-width="2" stroke-linejoin="round"/>
+        <text x="50" y="54" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#c6a15b">SASP</text>
+      </svg>
+    </div>
+    <div class="header-titles">
+      <p class="eyebrow">San Andreas State Police</p>
+      <h1 class="site-title">Manuel de procédures</h1>
+      <p class="header-sub">Fiche de référence rookie — à consulter en patrouille</p>
+    </div>
+    <div class="header-meta mono">
+      DOC N° RK-2026<br>
+      RÉV. TERRAIN
+    </div>
+  </div>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="procedures">Procédures</button>
+    <button class="tab-btn" data-tab="quiz">Questions rookie</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ===================== ONGLET PROCÉDURES ===================== -->
+  <section class="tab-panel active" id="panel-procedures">
+    <div class="proc-shell">
+
+      <nav class="proc-nav">
+        <div class="search-wrap">
+          <input type="text" id="proc-search" placeholder="Rechercher une procédure…">
+        </div>
+        <ul class="proc-nav-list" id="proc-nav-list"></ul>
+      </nav>
+
+      <div class="proc-main">
+        <p class="no-results" id="no-results">Aucune procédure ne correspond à cette recherche.</p>
+
+        <article class="proc-section" id="sec-01" data-nav="Indicatifs & unités">
+          <div class="proc-section-head"><span class="num mono">01</span><h2>Indicatifs &amp; unités</h2></div>
+          <div class="proc-section-body">
+            <div class="entry radio-grid">
+              <div>
+                <p class="radio-col-title">Affiliation</p>
+                <div class="radio-item"><span class="code">Lincoln</span><span class="val">1 personne</span></div>
+                <div class="radio-item"><span class="code">Adam</span><span class="val">2 personnes</span></div>
+                <div class="radio-item"><span class="code">Tango</span><span class="val">3 personnes</span></div>
+                <div class="radio-item"><span class="code">Delta</span><span class="val">4 personnes</span></div>
+                <div class="radio-item"><span class="code">Victor</span><span class="val">Vélo</span></div>
+                <div class="radio-item"><span class="code">Mary</span><span class="val">Moto</span></div>
+                <div class="radio-item"><span class="code">Henry</span><span class="val">Hélicoptère</span></div>
+                <div class="radio-item"><span class="code">Bravo</span><span class="val">Bateau</span></div>
+              </div>
+              <div>
+                <p class="radio-col-title">Unité</p>
+                <div class="radio-item"><span class="code">David / QRF</span><span class="val">SWAT</span></div>
+                <div class="radio-item"><span class="code">CID</span><span class="val">Enquêteur</span></div>
+                <div class="radio-item"><span class="code">K9</span><span class="val">Unité canine</span></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="proc-section" id="sec-02" data-nav="Bases légales & usage de la force">
+          <div class="proc-section-head"><span class="num mono">02</span><h2>Bases légales &amp; usage de la force</h2></div>
+          <div class="proc-section-body">
+            <div class="entry">
+              <p class="entry-title">Légitime défense — définition</p>
+              <p>Réponse proportionnelle et immédiate à une menace injustifiée envers une personne, un tiers ou un bien matériel, afin d'interrompre l'exécution d'un crime ou d'un délit.</p>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Les 4 règles de sécurité d'une arme</p>
+              <ol>
+                <li>Toute arme doit toujours être considérée comme chargée.</li>
+                <li>Ne jamais laisser pointer le canon de son arme sur quelque chose que l'on ne souhaite pas détruire ou neutraliser.</li>
+                <li>Toujours garder son index en dehors de la queue de détente tant que les organes de visée ne sont pas alignés avec l'objectif.</li>
+                <li>Être sûr de son objectif et de son environnement.</li>
+              </ol>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Sommations &amp; proportionnalité</p>
+              <ul>
+                <li>3 sommations claires et audibles avant de neutraliser un individu — sauf si l'agression est imminente ou en cours (neutralisation immédiate).</li>
+                <li>Les moyens de défense employés doivent être proportionnels (ex : tirer avec une arme à feu face à un simple coup de poing n'est pas proportionnel).</li>
+                <li>La riposte intervient au moment de l'agression, jamais après (sinon c'est de la vengeance).</li>
+                <li>On agit face à une attaque à son encontre ou à l'encontre d'un proche.</li>
+                <li>Les menaces verbales ne justifient pas une agression physique.</li>
+                <li>Le menottage d'un individu ne lui permet pas d'invoquer la légitime défense.</li>
+                <li>La négociation doit impérativement être privilégiée — le tir est le dernier recours.</li>
+              </ul>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Vocabulaire &amp; neutralisation</p>
+              <ul class="tight">
+                <li>On n'« abat » pas un individu, on le <strong>neutralise</strong> — le but est de le mettre hors d'état de nuire, pas de le tuer.</li>
+                <li>Pour neutraliser, on utilise autant de balles que nécessaire, y compris plusieurs chargeurs si besoin.</li>
+                <li>Face à un individu dangereux, éviter de viser les organes vitaux dans la mesure du possible.</li>
+                <li>Le flare gun est considéré comme une arme non létale tant qu'il ne vise pas une personne. Dès qu'il vise quelqu'un, il est létal et l'usage du PDC est autorisé.</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="proc-section" id="sec-03" data-nav="Équipement & armes autorisées">
+          <div class="proc-section-head"><span class="num mono">03</span><h2>Équipement &amp; armes autorisées</h2></div>
+          <div class="proc-section-body">
+            <div class="entry">
+              <p class="entry-title">Dotation standard SASP</p>
+              <div class="chip-row">
+                <span class="chip">Uniforme</span>
+                <span class="chip">3-GPB</span>
+                <span class="chip">Matraque</span>
+                <span class="chip">Tazer</span>
+                <span class="chip">PDC</span>
+                <span class="chip">Radio</span>
+                <span class="chip">Munitions 9mm</span>
+                <span class="chip">Kit d'urgence</span>
+                <span class="chip">Lampe</span>
+                <span class="chip">Chargeur de grande capacité</span>
+                <span class="chip">Badge</span>
+                <span class="chip">Test GSR</span>
+                <span class="chip">Dashcam</span>
+                <span class="chip">Décapant graffiti</span>
+              </div>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Armes dont la possession civile est autorisée</p>
+              <p>Légalement, toute arme achetée dans une armurerie civile est autorisée à la possession. Cela comprend également les armes sous PPA civil :</p>
+              <div class="chip-row">
+                <span class="chip">Pistolet 9mm classique</span>
+                <span class="chip">WM 29 pistol</span>
+                <span class="chip">Flare</span>
+                <span class="chip">Barre à mine</span>
+                <span class="chip">Extincteur</span>
+                <span class="chip">Couteau</span>
+                <span class="chip">Hache</span>
+                <span class="chip">Poing américain</span>
+                <span class="chip">Batte de baseball</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="proc-section" id="sec-04" data-nav="Contrôles & fouilles">
+          <div class="proc-section-head"><span class="num mono">04</span><h2>Contrôles &amp; fouilles</h2></div>
+          <div class="proc-section-body">
+            <div class="entry">
+              <p class="entry-title">Palpation — objets détectables</p>
+              <ul class="tight">
+                <li>Les armes à feu.</li>
+                <li>Les armes de corps à corps.</li>
+                <li>La présence de pochons et d'argent (sans savoir le contenu ni la quantité).</li>
+              </ul>
+              <p>Les petits objets comme les pétoires (SNS), poings américains, crans d'arrêt ou silencieux ne sont pas détectables.</p>
+              <div class="callout"><strong>Motif de palpation :</strong> en cas de flagrant délit ou d'interpellation.</div>
+              <div class="callout info"><strong>Rappel :</strong> un contrôle ne doit jamais être motivé par des caractéristiques physiques ou des signes distinctifs. Le contrôle d'identité ne peut être effectué qu'en cas de flagrant délit ou de complicité.</div>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Fouille d'individu</p>
+              <p>Une fouille complète doit être réalisée au poste, ou en Defcon 3/2/1.</p>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Fouille de véhicule</p>
+              <p>Elle se fait au poste lors d'une mise en fourrière. Elle peut être faite sur la voie publique avec l'accord du propriétaire, ou en Defcon 3/2/1.</p>
+              <div class="callout info"><strong>À savoir :</strong> les objets illégaux trouvés dans un véhicule sont à reprocher au conducteur.</div>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Personne du sexe opposé</p>
+              <ol>
+                <li>Demander à un agent du même sexe.</li>
+                <li>Elle peut être effectuée par un agent du sexe opposé en présence de deux agents témoins (à partir du grade d'Officier).</li>
+              </ol>
+              <div class="callout">Si la personne concernée donne son accord de façon claire et nette, ces mesures ne sont pas obligatoires. Ces règles s'appliquent aussi bien à la palpation qu'à la fouille corporelle.</div>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Procédure de contrôle routier</p>
+              <ol>
+                <li>Prendre en chasse le véhicule en code 3.</li>
+                <li>Se placer derrière le véhicule à une distance de ±1,5 véhicule et passer en code 2.</li>
+                <li>Demander au conducteur et au passager de couper le contact et de baisser les vitres.</li>
+                <li>Contrôler le permis du conducteur.</li>
+                <li>Les collègues contrôlent le passager et le véhicule, et sécurisent l'environnement.</li>
+              </ol>
+            </div>
+          </div>
+        </article>
+
+        <article class="proc-section" id="sec-05" data-nav="Circulation & course-poursuite">
+          <div class="proc-section-head"><span class="num mono">05</span><h2>Circulation &amp; course-poursuite</h2></div>
+          <div class="proc-section-body">
+            <div class="entry">
+              <p class="entry-title">Limitations de vitesse</p>
+              <ul class="tight">
+                <li>Zone résidentielle → 70 km/h</li>
+                <li>Ville → 90 km/h</li>
+                <li>Autoroute → 150 km/h</li>
+              </ul>
+              <div class="callout">Un excès de vitesse ≥ 31 km/h (relevé via radar) peut entraîner une suspension du permis de 24h.</div>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Codes 1 - 2 - 3</p>
+              <ul class="tight">
+                <li><strong>Code 1</strong> → Respect du code de la route.</li>
+                <li><strong>Code 2</strong> → Gyrophare activé, 20 km/h en plus, ralentir aux intersections.</li>
+                <li><strong>Code 3</strong> → Gyrophare et sirène activés, pas de limite de vitesse en course-poursuite, prioritaire sur les intersections.</li>
+              </ul>
+              <div class="callout"><strong>Les codes 2 et 3 sont interdits</strong> pour un retour au poste.</div>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Calls durant une course-poursuite</p>
+              <p><span class="mono">10-58</span> = course-poursuite. Préciser le type d'armement — un armement lourd doit être signalé immédiatement en radio. L'indicatif de la patrouille prend le numéro du plus haut gradé, ou du pilote si plusieurs personnes ont le même grade.</p>
+              <div class="callout info">Exemple : <span class="mono">Adam X, on part en 10-58 suite à un 10-80 ATM</span>.</div>
+              <p>En cas de fuite à pied ou de séparation des individus, mettez-vous d'accord sur qui vous allez poursuivre. Le conducteur a souvent plus à se reprocher qu'un passager, mais ce dernier peut très bien être poursuivi si vous pensez qu'il est plus intéressant.</p>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Règles liées au PIT</p>
+              <ul class="tight">
+                <li>PIT strictement interdit.</li>
+                <li>Maintenir un écart de 3 véhicules lors des course-poursuites pour éviter les accidents.</li>
+                <li>En cas de PIT involontaire : réparation, puis retour en course-poursuite.</li>
+              </ul>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Demande de renfort — 10-24</p>
+              <p>Un 10-24 est une demande de renfort (faible / importante / 10-99).</p>
+              <ul class="tight">
+                <li>Demande de renfort Groupe 6 → 1 voiture sur zone, puis demande de renfort si nécessaire.</li>
+                <li>Demande faible → 2 voitures max sur zone (course-poursuite, demande de sécurisation sur terrain, etc.).</li>
+                <li>Demande importante → 5 voitures max sur zone (prise d'otage sur agent, fusillades, etc.).</li>
+                <li>Code 10-99 → toutes les unités sur zone (10-01 agent à terre / acte terroriste / incident de grande ampleur).</li>
+              </ul>
+              <p>4 cas réguliers de demande de renfort (avec exceptions) : infériorité numérique (nombre de véhicules ou de suspects), armement lourd, problème moteur, manque d'essence.</p>
+              <div class="callout">Toute course-poursuite → 2 véhicules max en poursuite. Prise d'otage sur agent/magistrat ou acte terroriste → 3 véhicules max en poursuite.</div>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Position — 10-20</p>
+              <p>Le 10-20 indique notre position ; il est souvent couplé à un 10-24 pour que des renforts puissent venir aider.</p>
+              <div class="callout info">Exemple : <span class="mono">Adam X besoin de 10-24 sur notre 10-20, nous sommes suivis par une voiture</span>.</div>
+              <p>Les 10-20 sont à faire toutes les 10 secondes ou à chaque changement de direction. En cas de surcharge de 10-20, prendre le relais à l'oral en radio, car le GPS sera bloqué.</p>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Progression à couvert et en sécurité</p>
+              <p>Tourner le véhicule, ouvrir les portes arrières gauche et droite (et le coffre si c'est une Dodge), puis reculer en même temps que les collègues avancent, pour leur offrir une sécurité.</p>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Stationnement gênant ou interdit</p>
+              <p>Le stationnement de véhicule est autorisé uniquement sur les zones autorisées. Les trottoirs de couleur rouge correspondent à un stationnement interdit, sauf pour les véhicules d'intervention en service.</p>
+              <ul class="tight">
+                <li><strong>Stationnement interdit :</strong> stationnement dans des zones strictement interdites (ex : lignes rouges, zones réservées) → mise en fourrière police 12h autorisée.</li>
+                <li><strong>Stationnement gênant :</strong> immobilisation d'un véhicule gênant la circulation ou l'accès à des zones publiques → mise en fourrière civile autorisée.</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="proc-section" id="sec-06" data-nav="Procédures judiciaires & droits Miranda">
+          <div class="proc-section-head"><span class="num mono">06</span><h2>Procédures judiciaires &amp; droits Miranda</h2></div>
+          <div class="proc-section-body">
+            <div class="entry">
+              <p class="entry-title">Texte des droits Miranda</p>
+              <div class="miranda-script">
+                <p>Madame/Monsieur <span class="ph">[X]</span>, nous sommes le <span class="ph">[jour | mois | année]</span> il est <span class="ph">[heure]</span>, vous êtes en état d'arrestation pour les raisons suivantes : <span class="ph">[raison(s) de l'arrestation]</span>. Vous avez le droit de garder le silence.</p>
+                <p>Si vous renoncez à ce droit, tout ce que vous direz pourra être et sera utilisé contre vous devant une cour de justice. Vous avez le droit à un avocat et d'avoir un avocat présent lors de l'interrogatoire. Si vous n'en avez pas les moyens, un avocat vous sera commis d'office.</p>
+                <p>Durant chaque interrogatoire, vous pourrez décider à n'importe quel moment d'exercer ces droits, de ne répondre à aucune question ou de ne faire aucune déposition. Vous avez le droit à un médecin, à boire et à manger.</p>
+                <p><strong>Avez-vous bien compris vos droits ?</strong></p>
+              </div>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Délais de lecture des droits</p>
+              <ul class="tight">
+                <li>Situation normale → 15 minutes</li>
+                <li>Situation dangereuse → 30 minutes</li>
+                <li>Défaut de document d'identité → 25 minutes (30 si situation dangereuse)</li>
+                <li>Besoin médical → attendre l'accord médical pour la lecture des droits</li>
+              </ul>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Procédure de lecture des droits</p>
+              <ul>
+                <li>En cas d'intervention EMS, toute procédure est gelée jusqu'à l'accord médical.</li>
+                <li>Pas de lecture de droit sans confirmation de l'identité du suspect (document d'identité ou empreinte digitale au poste).</li>
+                <li>Les droits doivent être relus à chaque ajout de chef d'inculpation.</li>
+                <li>Après 2 lectures des droits à un suspect, ils sont considérés comme acquis.</li>
+                <li>À chaque lecture de droit pour ajout de chef d'inculpation, vous pouvez lire 2 fois les droits.</li>
+                <li>Une fois en cellule, la relecture des droits est possible.</li>
+              </ul>
+            </div>
+            <div class="entry">
+              <p class="entry-title">4 droits Miranda secondaires</p>
+              <ul>
+                <li><strong>Droit de contacter un proche :</strong> l'interpellé peut prévenir un membre de sa famille, un ami ou son employeur de son arrestation, via un appel d'une minute sur haut-parleur.</li>
+                <li><strong>Droit à un interprète :</strong> si la personne ne parle pas ou ne comprend pas la langue utilisée par les forces de l'ordre.</li>
+                <li><strong>Droit au respect et à la dignité :</strong> la personne arrêtée doit être traitée humainement, sans recours à la violence, la menace ou toute forme de traitement dégradant.</li>
+                <li><strong>Droit d'accès aux éléments de procédure</strong> (dans la limite de ce qui ne nuit pas à l'enquête en cours), via son avocat.</li>
+              </ul>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Délais avocat</p>
+              <p>L'avocat dispose de <strong>10 minutes</strong> pour répondre à l'appel, puis de <strong>15 minutes</strong> pour venir au poste si l'on se trouve dans le nord, ou <strong>10 minutes</strong> si l'on se trouve dans le sud.</p>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Procédure avocat</p>
+              <ul>
+                <li>15 minutes maximum de discussion en privé, dans une salle d'interrogatoire.</li>
+                <li>Les portes doivent rester ouvertes.</li>
+                <li>Les agents ne restent pas à proximité pour écouter la conversation, ni derrière les vitres sans teint.</li>
+                <li>Toute discussion avec le suspect se fait en présence de son avocat.</li>
+                <li>Un accord à l'amiable peut être conclu entre nous et l'avocat, même avant la discussion avec son client.</li>
+                <li>Si aucun accord n'est trouvé : contacter un HG. Si pas de HG : voir un procureur. Si pas de procureur : voir un juge.</li>
+              </ul>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Appel DOJ — motif</p>
+              <p>Pour un délit majeur, un crime, si aucun accord n'a été trouvé avec l'avocat ni le HG, ou si le suspect est sous mandat d'arrêt.</p>
+              <div class="callout">S'ils sont aptes à suivre la demande, on suit leur instruction (venir au gouv, les attendre au poste, etc.). Sinon, la pose d'un bracelet est nécessaire.</div>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Temps de garde à vue (GAV)</p>
+              <p><strong>1 heure</strong> en situation normale, portée à <strong>72 heures</strong> avec l'accord du DOJ.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="proc-section" id="sec-07" data-nav="Interventions">
+          <div class="proc-section-head"><span class="num mono">07</span><h2>Interventions</h2></div>
+          <div class="proc-section-body">
+            <div class="entry">
+              <p class="entry-title">Appel EMS</p>
+              <p>Lors des patrouilles, il est fréquent de devoir solliciter les services d'urgence. Il est essentiel de rester courtois en toutes circonstances. Privilégiez l'appel service en précisant dès le début :</p>
+              <div class="callout info mono">« LSPD [matricule], Besoin d'un médecin svp »</div>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Raisons d'un appel médical</p>
+              <ul>
+                <li>Si votre individu est inconscient, vous devrez attendre l'accord des EMS pour commencer la procédure (automatique si unité X).</li>
+                <li>Suite à une poursuite, si votre individu fait un accident.</li>
+                <li>Pour toute personne, même hors procédure, nécessitant des soins.</li>
+                <li>Pour représenter un mineur lors d'une procédure en l'absence de responsable légal.</li>
+              </ul>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Fusillade avec blessés</p>
+              <div class="callout">En cas de fusillade avec 2 blessés par balle ou plus, possibilité de se rendre directement sur la fréquence EMS : <span class="mono">« SASP [matricule] arrivé sur fréquence »</span> + formule de politesse + explication courte de la situation (nombre de blessés, lieu, autres infos utiles) + position sur l'app service. Procédure des individus gelée tant que les EMS ne donnent pas le feu vert.</div>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Tir dans les pneus</p>
+              <ul>
+                <li>Autorisé après 15 minutes de CP et une demande à un supérieur assurant la centrale.</li>
+                <li>Tirs effectués à une vitesse inférieure ou égale à 80 km/h.</li>
+                <li>Un tir autorisé par minute.</li>
+                <li>Dashcam active tout le long de la procédure.</li>
+                <li>Aucun citoyen ou tiers ne doit se trouver à proximité de la zone de tir.</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="proc-section" id="sec-08" data-nav="Infractions">
+          <div class="proc-section-head"><span class="num mono">08</span><h2>Infractions</h2></div>
+          <div class="proc-section-body">
+            <div class="entry">
+              <p class="entry-title">Refus d'obtempérer</p>
+              <p>Refus de se soumettre à un ordre de la police — la police doit être présente sur place.</p>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Délit de fuite</p>
+              <p>Fuite d'un suspect après un accident, un délit ou un crime, alors que la police n'est pas encore sur place.</p>
+            </div>
+            <div class="entry">
+              <p class="entry-title">Retrait de permis</p>
+              <p>Retrait à partir de <strong>31 km/h</strong> au-dessus de la limite (relevé via radar) — suspension possible pendant <strong>24 heures</strong>.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="proc-section" id="sec-09" data-nav="Récapitulatif des délais">
+          <div class="proc-section-head"><span class="num mono">09</span><h2>Récapitulatif des délais</h2></div>
+          <div class="proc-section-body">
+            <table class="delay-table">
+              <thead><tr><th>Procédure</th><th>Délai</th></tr></thead>
+              <tbody>
+                <tr><td>Lecture des droits Miranda — normale</td><td class="delay-val">15 min</td></tr>
+                <tr><td>Lecture des droits Miranda — dangereuse</td><td class="delay-val">30 min</td></tr>
+                <tr><td>Défaut de document d'identité</td><td class="delay-val">25 min (30 si dangereuse)</td></tr>
+                <tr><td>Besoin médical avant lecture des droits</td><td class="delay-val">Jusqu'à accord médical</td></tr>
+                <tr><td>Garde à vue — situation normale</td><td class="delay-val">1 h</td></tr>
+                <tr><td>Garde à vue — accord DOJ</td><td class="delay-val">72 h</td></tr>
+                <tr><td>Réponse de l'avocat à l'appel</td><td class="delay-val">10 min</td></tr>
+                <tr><td>Venue de l'avocat au poste (Nord)</td><td class="delay-val">15 min</td></tr>
+                <tr><td>Venue de l'avocat au poste (Sud)</td><td class="delay-val">10 min</td></tr>
+                <tr><td>Discussion privée avec l'avocat</td><td class="delay-val">15 min max</td></tr>
+                <tr><td>Tir dans les pneus — CP avant autorisation</td><td class="delay-val">15 min</td></tr>
+                <tr><td>Retrait de permis (excès ≥ 31 km/h)</td><td class="delay-val">24 h</td></tr>
+                <tr><td>Mise en fourrière police (stationnement interdit)</td><td class="delay-val">12 h</td></tr>
+                <tr><td>Communication de position (10-20)</td><td class="delay-val">Toutes les 10 sec / changement de direction</td></tr>
+                <tr><td>Sommations avant neutralisation</td><td class="delay-val">3 (sauf agression imminente)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ONGLET QUESTIONS ROOKIE ===================== -->
+  <section class="tab-panel" id="panel-quiz">
+    <div class="quiz-shell">
+      <div class="quiz-controls" id="filter-row">
+        <button class="filter-chip active" data-filter="Toutes">Toutes</button>
+        <button class="random-btn" id="random-btn">🎲 Question aléatoire</button>
+      </div>
+      <p class="q-count" id="q-count"></p>
+      <div id="q-list"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site">SASP — Document interne de formation — à usage des officiers formateurs et rookies en patrouille</footer>
+
+<!-- ===================== MODALE QUESTION ALÉATOIRE ===================== -->
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-q">
+    <div class="modal-head">
+      <span class="modal-cat" id="modal-cat"></span>
+      <button class="modal-close" id="modal-close" aria-label="Fermer">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-q" id="modal-q"></p>
+      <p class="modal-a-label">Réponse</p>
+      <div class="modal-answer-block" id="modal-a"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-reroll" id="modal-reroll">🎲 Piocher une autre</button>
+      <button class="modal-dismiss" id="modal-dismiss">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ---------- Tabs ----------
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const panels = { procedures: document.getElementById('panel-procedures'), quiz: document.getElementById('panel-quiz') };
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      Object.values(panels).forEach(p => p.classList.remove('active'));
+      panels[btn.dataset.tab].classList.add('active');
+    });
+  });
+
+  // ---------- Build procédures nav from sections ----------
+  const navList = document.getElementById('proc-nav-list');
+  const sections = Array.from(document.querySelectorAll('.proc-section'));
+  navList.innerHTML = sections.map(sec => {
+    const num = sec.querySelector('.num').textContent;
+    const title = sec.dataset.nav;
+    return '<li><a href="#' + sec.id + '" class="num" data-target="' + sec.id + '"><span class="num mono">' + num + '</span> ' + title + '</a></li>';
+  }).join('');
+  const navLinks = Array.from(navList.querySelectorAll('a'));
+
+  // scroll spy
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const link = navLinks.find(l => l.dataset.target === entry.target.id);
+      if (!link) return;
+      if (entry.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(sec => observer.observe(sec));
+
+  // ---------- Search ----------
+  const searchInput = document.getElementById('proc-search');
+  const noResults = document.getElementById('no-results');
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.trim().toLowerCase();
+    let visibleCount = 0;
+    sections.forEach(sec => {
+      const match = sec.textContent.toLowerCase().includes(q);
+      sec.style.display = match ? '' : 'none';
+      if (match) visibleCount++;
+    });
+    noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+  });
+
+  // ---------- Questions data ----------
+  const QUESTIONS = [
+    { cat: "Indicatifs & unités", q: "Que signifie l'indicatif Tango en termes d'effectif ?", a: "Une patrouille de 3 personnes." },
+    { cat: "Indicatifs & unités", q: "Quels indicatifs correspondent au vélo, à la moto, à l'hélicoptère et au bateau ?", a: "Victor = vélo, Mary = moto, Henry = hélicoptère, Bravo = bateau." },
+    { cat: "Indicatifs & unités", q: "Que désignent les unités David/QRF, CID et K9 ?", a: "David / QRF = SWAT, CID = Enquêteur, K9 = Unité canine." },
+
+    { cat: "Bases légales", q: "Quelle est la définition de la légitime défense ?", a: "Une réponse proportionnelle et immédiate à une menace injustifiée envers une personne, un tiers ou un bien matériel, afin d'interrompre l'exécution d'un crime ou d'un délit." },
+    { cat: "Bases légales", q: "Citez les 4 règles de sécurité d'une arme.", a: "1) Toute arme est toujours considérée comme chargée. 2) Ne jamais pointer le canon sur ce qu'on ne veut pas détruire/neutraliser. 3) Index hors de la queue de détente tant que les organes de visée ne sont pas alignés sur l'objectif. 4) Être sûr de son objectif et de son environnement." },
+
+    { cat: "Usage de la force", q: "Combien de sommations doit-on faire avant de neutraliser un individu ?", a: "3 sommations claires et audibles, sauf si l'agression est imminente ou en cours (neutralisation immédiate possible)." },
+    { cat: "Usage de la force", q: "Qu'est-ce que la proportionnalité des moyens de défense ?", a: "Les moyens employés doivent être proportionnés à la menace — tirer avec une arme à feu face à un simple coup de poing n'est pas proportionnel." },
+    { cat: "Usage de la force", q: "Le menottage d'un individu lui permet-il d'invoquer la légitime défense ?", a: "Non." },
+    { cat: "Usage de la force", q: "Dit-on qu'on « abat » un individu ?", a: "Non — on le neutralise. Le but est de le mettre hors d'état de nuire, pas de le tuer." },
+    { cat: "Usage de la force", q: "Combien de balles peut-on utiliser pour neutraliser un individu ?", a: "Autant que nécessaire, y compris plusieurs chargeurs si besoin." },
+    { cat: "Usage de la force", q: "Doit-on viser les organes vitaux pour neutraliser un individu dangereux ?", a: "Non, il faut éviter les organes vitaux dans la mesure du possible — le but n'est pas de tuer." },
+    { cat: "Usage de la force", q: "Un tir de flare gun sur une personne est-il létal ?", a: "Oui — le flare gun est non létal tant qu'il ne vise pas une personne ; dès qu'il vise quelqu'un, il est considéré comme létal et l'usage du PDC est autorisé." },
+
+    { cat: "Équipement", q: "Citez au moins six éléments de l'équipement standard d'un agent SASP.", a: "Uniforme, 3-GPB, matraque, tazer, PDC, radio, munitions 9mm, kit d'urgence, lampe, chargeur de grande capacité, badge, test GSR, dashcam, décapant graffiti." },
+    { cat: "Équipement", q: "Une arme achetée en armurerie civile est-elle autorisée à la possession ?", a: "Oui, légalement — cela comprend aussi les armes sous PPA civil." },
+    { cat: "Équipement", q: "Citez au moins quatre objets autorisés sous PPA civil.", a: "Pistolet 9mm classique, WM 29 pistol, flare, barre à mine, extincteur, couteau, hache, poing américain, batte de baseball." },
+
+    { cat: "Contrôles & fouilles", q: "Quels objets ne sont pas détectables par une simple palpation ?", a: "Les petits objets comme les pétoires (SNS), les poings américains, les crans d'arrêt ou les silencieux." },
+    { cat: "Contrôles & fouilles", q: "Quel est le motif pour effectuer une palpation ?", a: "En cas de flagrant délit ou d'interpellation." },
+    { cat: "Contrôles & fouilles", q: "Un contrôle d'identité peut-il être motivé par des caractéristiques physiques ?", a: "Non — un contrôle ne doit jamais être motivé par des caractéristiques physiques ou des signes distinctifs. Seul le flagrant délit ou la complicité le justifie." },
+    { cat: "Contrôles & fouilles", q: "Où doit être réalisée une fouille complète d'individu ?", a: "Au poste, ou en Defcon 3/2/1." },
+    { cat: "Contrôles & fouilles", q: "Où peut-on effectuer une fouille de véhicule ?", a: "Au poste lors d'une mise en fourrière, ou sur la voie publique avec l'accord du propriétaire, ou en Defcon 3/2/1." },
+    { cat: "Contrôles & fouilles", q: "Comment procéder à une palpation ou une fouille sur une personne du sexe opposé ?", a: "Demander en priorité un agent du même sexe ; à défaut, un agent du sexe opposé peut le faire en présence de deux agents témoins, à partir du grade d'Officier. Si la personne donne un accord clair et net, ces mesures ne sont pas obligatoires." },
+    { cat: "Contrôles & fouilles", q: "Décrivez les grandes étapes d'un contrôle routier.", a: "Prendre en chasse en code 3, se placer à ±1,5 véhicule derrière et passer en code 2, demander de couper le contact et baisser les vitres, contrôler le permis du conducteur pendant que les collègues contrôlent le passager, le véhicule, et sécurisent l'environnement." },
+
+    { cat: "Circulation & poursuite", q: "Quelles sont les limitations de vitesse en zone résidentielle, en ville et sur autoroute ?", a: "70 km/h en zone résidentielle, 90 km/h en ville, 150 km/h sur autoroute." },
+    { cat: "Circulation & poursuite", q: "Que signifient les codes 1, 2 et 3 ?", a: "Code 1 = respect du code de la route. Code 2 = gyrophare activé, +20 km/h autorisés, ralentir aux intersections. Code 3 = gyrophare et sirène activés, pas de limite de vitesse en course-poursuite, prioritaire aux intersections." },
+    { cat: "Circulation & poursuite", q: "Peut-on utiliser les codes 2 et 3 pour un retour au poste ?", a: "Non, c'est interdit." },
+    { cat: "Circulation & poursuite", q: "Que signifie l'appel radio « 10-58 » ?", a: "Une course-poursuite." },
+    { cat: "Circulation & poursuite", q: "Le PIT est-il autorisé ?", a: "Non, il est strictement interdit." },
+    { cat: "Circulation & poursuite", q: "Quel écart doit-on maintenir avec le véhicule poursuivi ?", a: "Un écart de 3 véhicules, pour éviter les accidents." },
+    { cat: "Circulation & poursuite", q: "Qu'est-ce qu'un 10-24 ?", a: "Une demande de renfort (faible, importante, ou code 10-99)." },
+    { cat: "Circulation & poursuite", q: "Combien de véhicules maximum pour une demande de renfort faible et une demande importante ?", a: "2 véhicules max pour une demande faible, 5 véhicules max pour une demande importante." },
+    { cat: "Circulation & poursuite", q: "Combien de véhicules maximum en course-poursuite, normalement et en cas de prise d'otage sur agent/magistrat ?", a: "2 véhicules max normalement, 3 véhicules max en cas de prise d'otage sur agent/magistrat ou d'acte terroriste." },
+    { cat: "Circulation & poursuite", q: "Qu'est-ce qu'un 10-20 et à quelle fréquence doit-il être communiqué ?", a: "C'est notre position ; à communiquer toutes les 10 secondes ou à chaque changement de direction, souvent couplé à un 10-24." },
+    { cat: "Circulation & poursuite", q: "Quelle est la différence entre stationnement interdit et stationnement gênant ?", a: "Stationnement interdit = zones strictement interdites (lignes rouges, zones réservées), mise en fourrière police 12h autorisée. Stationnement gênant = immobilisation gênant la circulation ou l'accès à des zones publiques, mise en fourrière civile autorisée." },
+
+    { cat: "Judiciaire", q: "Combien de temps un avocat a-t-il pour répondre à un appel, puis pour se présenter au poste ?", a: "10 minutes pour répondre à l'appel, puis 15 minutes pour venir au poste si l'on est dans le nord, ou 10 minutes si l'on est dans le sud." },
+    { cat: "Judiciaire", q: "Quelles sont les règles de la discussion privée entre un suspect et son avocat ?", a: "15 minutes maximum, en salle d'interrogatoire, portes ouvertes ; les agents ne restent pas à proximité ni derrière les vitres sans teint. Toute discussion avec le suspect se fait en présence de son avocat." },
+    { cat: "Judiciaire", q: "Que faire si aucun accord n'est trouvé avec l'avocat ?", a: "Contacter un HG. S'il n'y a pas de HG, voir un procureur. S'il n'y a pas de procureur, voir un juge." },
+    { cat: "Judiciaire", q: "Dans quels cas fait-on un appel DOJ ?", a: "Pour un délit majeur, un crime, si aucun accord n'a été trouvé avec l'avocat ni un HG, ou si le suspect est sous mandat d'arrêt." },
+    { cat: "Judiciaire", q: "Quelle est la durée de garde à vue en situation normale, et avec l'accord du DOJ ?", a: "1 heure en situation normale, portée à 72 heures avec l'accord du DOJ." },
+    { cat: "Judiciaire", q: "Peut-on lire les droits Miranda sans confirmer l'identité du suspect ?", a: "Non — il faut une confirmation d'identité (document d'identité ou empreinte digitale au poste)." },
+    { cat: "Judiciaire", q: "À quel moment les droits Miranda doivent-ils être relus ?", a: "À chaque ajout de chef d'inculpation. Après 2 lectures, les droits sont considérés comme acquis. Une relecture reste possible une fois le suspect en cellule." },
+    { cat: "Judiciaire", q: "Que faire si un individu a besoin d'une intervention médicale avant la lecture des droits ?", a: "Attendre l'accord médical — toute la procédure est gelée jusqu'à cet accord." },
+    { cat: "Judiciaire", q: "Citez les 4 droits Miranda secondaires.", a: "Droit de contacter un proche (1 minute, haut-parleur), droit à un interprète, droit au respect et à la dignité, droit d'accès aux éléments de procédure via son avocat." },
+    { cat: "Judiciaire", q: "En quoi consiste le droit de contacter un proche ?", a: "L'interpellé peut prévenir un membre de sa famille, un ami ou son employeur de son arrestation, via un appel d'une minute sur haut-parleur." },
+
+    { cat: "Interventions", q: "Comment formuler un appel service pour demander un médecin ?", a: "« LSPD [matricule], Besoin d'un médecin svp » — en restant courtois en toutes circonstances." },
+    { cat: "Interventions", q: "Dans quels cas doit-on appeler les EMS ?", a: "Individu inconscient (attendre l'accord des EMS, automatique si unité X) ; accident suite à une poursuite ; toute personne nécessitant des soins même hors procédure ; pour représenter un mineur en l'absence de responsable légal." },
+    { cat: "Interventions", q: "Dans quel cas peut-on se rendre directement sur la fréquence des EMS ?", a: "En cas de fusillade avec 2 blessés par balle ou plus. On annonce : « SASP [matricule] arrivé sur fréquence » + formule de politesse + explication courte (nombre de blessés, lieu, autres infos utiles) + position." },
+    { cat: "Interventions", q: "Quelles sont les conditions pour effectuer un tir dans les pneus ?", a: "Après 15 minutes de CP et une demande à un supérieur assurant la centrale ; vitesse ≤ 80 km/h ; un tir autorisé par minute ; dashcam active en continu ; aucun tiers à proximité de la zone de tir." },
+
+    { cat: "Infractions", q: "Qu'est-ce qu'un refus d'obtempérer ?", a: "Le refus de se soumettre à un ordre de la police — la police doit être présente sur place pour que ça soit qualifié ainsi." },
+    { cat: "Infractions", q: "Qu'est-ce qu'un délit de fuite ?", a: "La fuite d'un suspect après un accident, un délit ou un crime, alors que la police n'est pas encore arrivée sur place." },
+    { cat: "Infractions", q: "À partir de quelle vitesse peut-on retirer le permis, et pour combien de temps ?", a: "À partir de 31 km/h au-dessus de la limite (relevé via radar) ; suspension possible pendant 24 heures." }
+  ];
+
+  const CATEGORIES = ["Toutes", "Indicatifs & unités", "Bases légales", "Usage de la force", "Équipement", "Contrôles & fouilles", "Circulation & poursuite", "Judiciaire", "Interventions", "Infractions"];
+
+  const filterRow = document.getElementById('filter-row');
+  const randomBtn = document.getElementById('random-btn');
+  CATEGORIES.slice(1).forEach(cat => {
+    const b = document.createElement('button');
+    b.className = 'filter-chip';
+    b.dataset.filter = cat;
+    b.textContent = cat;
+    filterRow.insertBefore(b, randomBtn);
+  });
+
+  const qList = document.getElementById('q-list');
+  const qCount = document.getElementById('q-count');
+  let activeFilter = "Toutes";
+
+  function currentFiltered() {
+    return activeFilter === "Toutes" ? QUESTIONS : QUESTIONS.filter(q => q.cat === activeFilter);
+  }
+
+  function renderQuestions() {
+    const filtered = currentFiltered();
+    qCount.textContent = filtered.length + (filtered.length > 1 ? " questions" : " question");
+    qList.innerHTML = filtered.map((item) => (
+      '<div class="q-card">' +
+        '<div class="q-card-top">' +
+          '<p class="q-cat">' + item.cat + '</p>' +
+          '<p class="q-text">' + item.q + '</p>' +
+          '<button class="reveal-btn">Afficher la réponse</button>' +
+        '</div>' +
+        '<div class="q-answer">' +
+          '<div class="q-answer-inner">' +
+            '<p class="a-label">Réponse</p>' +
+            '<p>' + item.a + '</p>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    )).join('');
+  }
+  renderQuestions();
+
+  filterRow.addEventListener('click', (e) => {
+    const chip = e.target.closest('.filter-chip');
+    if (!chip) return;
+    filterRow.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    activeFilter = chip.dataset.filter;
+    renderQuestions();
+  });
+
+  qList.addEventListener('click', (e) => {
+    const btn = e.target.closest('.reveal-btn');
+    if (!btn) return;
+    const card = btn.closest('.q-card');
+    const answer = card.querySelector('.q-answer');
+    const isOpen = answer.classList.toggle('open');
+    if (isOpen) {
+      answer.style.maxHeight = answer.scrollHeight + 'px';
+      btn.textContent = 'Masquer la réponse';
+    } else {
+      answer.style.maxHeight = '0px';
+      btn.textContent = 'Afficher la réponse';
+    }
+  });
+
+  // ---------- Modale question aléatoire ----------
+  const modalBackdrop = document.getElementById('modal-backdrop');
+  const modalCat = document.getElementById('modal-cat');
+  const modalQ = document.getElementById('modal-q');
+  const modalA = document.getElementById('modal-a');
+  const modalClose = document.getElementById('modal-close');
+  const modalDismiss = document.getElementById('modal-dismiss');
+  const modalReroll = document.getElementById('modal-reroll');
+
+  let lastPickedIdx = -1;
+
+  function pickRandomQuestion() {
+    const pool = currentFiltered();
+    if (pool.length === 0) return;
+    let idx = Math.floor(Math.random() * pool.length);
+    if (pool.length > 1) {
+      let tries = 0;
+      while (idx === lastPickedIdx && tries < 6) {
+        idx = Math.floor(Math.random() * pool.length);
+        tries++;
+      }
+    }
+    lastPickedIdx = idx;
+    const item = pool[idx];
+    modalCat.textContent = item.cat;
+    modalQ.textContent = item.q;
+    modalA.textContent = item.a;
+  }
+
+  function openModal() {
+    pickRandomQuestion();
+    modalBackdrop.classList.add('open');
+  }
+  function closeModal() {
+    modalBackdrop.classList.remove('open');
+  }
+
+  randomBtn.addEventListener('click', openModal);
+  modalReroll.addEventListener('click', pickRandomQuestion);
+  modalClose.addEventListener('click', closeModal);
+  modalDismiss.addEventListener('click', closeModal);
+  modalBackdrop.addEventListener('click', (e) => {
+    if (e.target === modalBackdrop) closeModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modalBackdrop.classList.contains('open')) closeModal();
+  });
+</script>
+
+</body>
+</html>
